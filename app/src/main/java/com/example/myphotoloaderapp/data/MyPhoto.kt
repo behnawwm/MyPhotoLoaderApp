@@ -1,10 +1,10 @@
-package com.example.myphotoloaderapp.Model
+package com.example.myphotoloaderapp.data
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Photo(
+data class MyPhoto(
     var id: String,
     var desc: String?,
     var urls: PhotoUrls,
