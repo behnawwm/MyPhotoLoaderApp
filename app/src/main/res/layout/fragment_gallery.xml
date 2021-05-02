@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_red_light"
+    tools:context=".UI.gallery.GalleryFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_photos"
@@ -26,7 +28,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/btn_photo_retry"
         android:layout_centerHorizontal="true"
-        android:text="Result not showing!" />
+        android:text="Result not showing!"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/btn_photo_retry"
