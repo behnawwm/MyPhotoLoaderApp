@@ -5,8 +5,10 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import com.example.myphotoloaderapp.R
 import com.example.myphotoloaderapp.databinding.FragmentGalleryBinding
@@ -33,13 +35,35 @@ class GalleryFragment : Fragment(R.layout.fragment_gallery) {
                 header = PhotoLoadStateAdapter { adapter.retry() },
                 footer = PhotoLoadStateAdapter { adapter.retry() }
             )
+            btnPhotoRetry.setOnClickListener {
+                adapter.retry()
+            }
         }
 
         viewmodel.photos.observe(viewLifecycleOwner) {
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
         }
-        setHasOptionsMenu(true)
 
+        adapter.addLoadStateListener { loadState ->
+            binding.apply {
+                loadingMain.isVisible = loadState.source.refresh is LoadState.Loading
+                rvPhotos.isVisible = loadState.source.refresh is LoadState.NotLoading
+                btnPhotoRetry.isVisible = loadState.source.refresh is LoadState.Error
+                tvErrorGallery.isVisible = loadState.source.refresh is LoadState.Error
+
+                // empty view
+                if (loadState.source.refresh is LoadState.NotLoading &&
+                    loadState.append.endOfPaginationReached &&
+                    adapter.itemCount < 1) {
+                    rvPhotos.isVisible = false
+                    tv_empty_gallery.isVisible = true
+                } else {
+                    tv_empty_gallery.isVisible = false
+                }
+            }
+        }
+
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
