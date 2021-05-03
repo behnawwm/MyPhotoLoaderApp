@@ -17,7 +17,7 @@ class GalleryViewModel @ViewModelInject constructor(
     private val currentQuery = MutableLiveData(DEFAULT_QUERY)
 
     var photos = currentQuery.switchMap { queryString ->
-        repository.getSearchResults(DEFAULT_QUERY).cachedIn(viewModelScope)
+        repository.getSearchResults(queryString).cachedIn(viewModelScope)
     }
 
     fun searchPhotos(query: String) {
