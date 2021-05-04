@@ -9,7 +9,7 @@ Simple photo loading app powered by [Unsplash.com](https://unsplash.com) which i
 
 ## Screenshots:
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130566.jpg" align="left" width="300" >
-<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130568.jpg" align="left" width="300" >
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130568.jpg" width="300" >
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130569.jpg" align="left" width="300" >
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130570.jpg" width="300" >
  
