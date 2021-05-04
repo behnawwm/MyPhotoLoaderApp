@@ -4,7 +4,12 @@ Simple photo loading app powered by [Unsplash.com](https://unsplash.com) which i
 
 [Apk](https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/Apk/MyPhotoLoader.apk)
 
-![](https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/ezgif-2-b548f7d32d1b.gif?raw=true)
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/ezgif-2-b548f7d32d1b.gif?raw=true" width="50%" >
+
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130566.jpg" width="50%" >
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130568.jpg" width="50%" >
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130569.jpg" width="50%" >
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130570.jpg" width="50%" >
 
 
 (If no results were shown, replace UNSPLASH_ACCESS_KEY in build.gradle with your own access_key)
