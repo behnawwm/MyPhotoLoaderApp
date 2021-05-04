@@ -13,5 +13,5 @@ Simple photo loading app powered by [Unsplash.com](https://unsplash.com) which i
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130569.jpg" align="left" width="300" >
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130570.jpg" align="left" width="300" >
 
-</p>
+## Update access_key if needed
 (If no results were shown, replace UNSPLASH_ACCESS_KEY in build.gradle with your own access_key)
