@@ -10,10 +10,9 @@ Simple photo loading app powered by [Unsplash.com](https://unsplash.com) which i
 ## Screenshots:
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130566.jpg" align="left" width="200" >
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130568.jpg" align="left" width="200" >
-<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130569.jpg" align="left" width="200" >
-<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130570.jpg" align="left" width="200" >
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130569.jpg" width="200" >
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130570.jpg" width="200" >
  
-<span style="white-space: pre-line">@Model.CommentText</span>
 
 ## Update access_key if needed
 (If no results were shown, replace UNSPLASH_ACCESS_KEY in build.gradle with your own access_key)
