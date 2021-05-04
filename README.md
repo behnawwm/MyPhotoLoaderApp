@@ -8,8 +8,8 @@ Simple photo loading app powered by [Unsplash.com](https://unsplash.com) which i
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/ezgif-2-b548f7d32d1b.gif?raw=true" width="400" >
 
 ## Screenshots:
-<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130566.jpg" width="300" >
-<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130568.jpg" width="300" >
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130566.jpg" align="left" width="300" >
+<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130568.jpg" align="left" width="300" >
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130569.jpg" width="300" >
 <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130570.jpg" width="300" >
  
