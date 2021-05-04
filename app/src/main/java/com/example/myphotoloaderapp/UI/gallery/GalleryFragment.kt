@@ -8,15 +8,17 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import com.example.myphotoloaderapp.R
+import com.example.myphotoloaderapp.data.MyPhoto
 import com.example.myphotoloaderapp.databinding.FragmentGalleryBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
 @AndroidEntryPoint
-class GalleryFragment : Fragment(R.layout.fragment_gallery) {
+class GalleryFragment : Fragment(R.layout.fragment_gallery), PhotoAdapter.OnItemPressListener {
 
     val viewmodel by viewModels<GalleryViewModel>()
 
@@ -28,7 +30,7 @@ class GalleryFragment : Fragment(R.layout.fragment_gallery) {
 
         _binding = FragmentGalleryBinding.bind(view)
 
-        val adapter = PhotoAdapter()
+        val adapter = PhotoAdapter(this)
         binding.apply {
             rv_photos.setHasFixedSize(true)
             rv_photos.adapter = adapter.withLoadStateHeaderAndFooter(
@@ -93,5 +95,10 @@ class GalleryFragment : Fragment(R.layout.fragment_gallery) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun OnItemClick(photo: MyPhoto) {
+        val action = GalleryFragmentDirections.actionGalleryFragmentToDetailsFragment(photo)
+        findNavController().navigate(action)
     }
 }

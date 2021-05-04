@@ -11,7 +11,8 @@ import com.example.myphotoloaderapp.R
 import com.example.myphotoloaderapp.data.MyPhoto
 import com.example.myphotoloaderapp.databinding.ItemPhotoBinding
 
-class PhotoAdapter : PagingDataAdapter<MyPhoto, PhotoAdapter.PhotoViewHolder>(DIFF_CALLBACK) {
+class PhotoAdapter(val listener: OnItemPressListener) :
+    PagingDataAdapter<MyPhoto, PhotoAdapter.PhotoViewHolder>(DIFF_CALLBACK) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
@@ -27,8 +28,20 @@ class PhotoAdapter : PagingDataAdapter<MyPhoto, PhotoAdapter.PhotoViewHolder>(DI
             holder.bind(currentItem)
     }
 
-    class PhotoViewHolder(private val binding: ItemPhotoBinding) :
+    inner class PhotoViewHolder(private val binding: ItemPhotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                var position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    var item = getItem(position)
+                    if (item != null) {
+                        listener.OnItemClick(item)
+                    }
+                }
+            }
+        }
 
         fun bind(photo: MyPhoto) {
             binding.apply {
@@ -43,6 +56,10 @@ class PhotoAdapter : PagingDataAdapter<MyPhoto, PhotoAdapter.PhotoViewHolder>(DI
             }
         }
 
+    }
+
+    interface OnItemPressListener {
+        fun OnItemClick(photo: MyPhoto)
     }
 
     object DIFF_CALLBACK : DiffUtil.ItemCallback<MyPhoto>() {
