@@ -2,7 +2,7 @@
 
 Simple photo loading app powered by [Unsplash.com](https://unsplash.com) which implements MVVM architecture using Hilt, Navigation Component, Retrofit, Paging 3 library, Glide, View Binding & Coroutines.
 
-[Get .APK file from here!](https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/Apk/MyPhotoLoader.apk)
+[Get .APK file from here!](https://github.com/behnawwm/MyPhotoLoaderApp/raw/master/Apk/MyPhotoLoader.apk)
 
 
 ## Screenshots:
