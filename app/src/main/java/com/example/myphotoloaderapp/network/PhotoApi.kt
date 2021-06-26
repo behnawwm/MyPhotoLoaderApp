@@ -11,7 +11,6 @@ interface PhotoApi {
     companion object {
         const val ACCESS_KEY = BuildConfig.UNSPLASH_ACCESS_KEY
         const val BASE_URL = "https://api.unsplash.com/"
-
     }
 
     @Headers("Accept-Version: v1", "Authorization: Client-ID $ACCESS_KEY")

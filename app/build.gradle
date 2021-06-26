@@ -9,7 +9,7 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.example.myphotoloaderapp"
@@ -75,6 +75,18 @@ dependencies {
 
     // Paging 3
     implementation "androidx.paging:paging-runtime:$pagingVersion"
+
+    // Blur hash for placeholder //todo
+    implementation 'xyz.belvi.blurHash:blurHash:1.0.4'
+
+    //Downloader
+    implementation 'com.mindorks.android:prdownloader:0.6.0'
+
+    //file picker
+    implementation 'com.nononsenseapps:filepicker:4.1.0'
+
+    implementation 'com.nbsp:materialfilepicker:1.9.1'
+
 }
 kapt {
     correctErrorTypes true

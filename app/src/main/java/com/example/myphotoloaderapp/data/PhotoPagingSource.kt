@@ -13,11 +13,11 @@ class PhotoPagingSource(
 ) : PagingSource<Int, MyPhoto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MyPhoto> {
-        var posistion = params.key ?: STARTING_PAGE_INDEX
+        val posistion = params.key ?: STARTING_PAGE_INDEX
 
         return try {
-            var response = api.searchPhoto(query, posistion, params.loadSize)
-            var photos: List<MyPhoto> = response.results
+            val response = api.searchPhoto(query, posistion, params.loadSize)
+            val photos: List<MyPhoto> = response.results
 
             LoadResult.Page(
                 data = photos,

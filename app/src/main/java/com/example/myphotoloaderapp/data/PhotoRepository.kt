@@ -18,6 +18,5 @@ class PhotoRepository @Inject constructor(var api: PhotoApi) {
                 enablePlaceholders = false
             ),
             pagingSourceFactory = { PhotoPagingSource(api, query) }
-
         ).liveData
 }

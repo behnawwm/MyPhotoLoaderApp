@@ -11,16 +11,13 @@ data class MyPhoto(
     var user: User
 ) : Parcelable {
 
-
     @Parcelize
     data class PhotoUrls(
         var raw: String,
         var full: String,
         var regular: String,
         var thumb: String
-    ) : Parcelable {
-
-    }
+    ) : Parcelable
 
     @Parcelize
     data class User(
