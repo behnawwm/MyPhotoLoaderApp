@@ -1,5 +1,7 @@
 package com.example.myphotoloaderapp.UI.details
 
+import android.Manifest
+import android.content.ContentResolver
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -17,18 +19,30 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.downloader.PRDownloader
+import com.downloader.PRDownloaderConfig
 import com.example.myphotoloaderapp.R
 import com.example.myphotoloaderapp.databinding.FragmentDetailsBinding
 import com.nononsenseapps.filepicker.FilePickerActivity
+import com.permissionx.guolindev.PermissionX
+import com.tonyodev.fetch2.*
+import dev.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog
+import es.dmoral.toasty.Toasty
 
 
 class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     private val args by navArgs<DetailsFragmentArgs>()
+    lateinit var contentResolver: ContentResolver
+    lateinit var fetch: Fetch
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentDetailsBinding.bind(view)
+
+        contentResolver = activity?.contentResolver!!
+        initializeDownloader()
 
         binding.apply {
             val photo = args.photo
@@ -75,7 +89,17 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 paint.isUnderlineText = true
             }
         }
+
+
         setHasOptionsMenu(true)
+    }
+
+    private fun initializeDownloader() {
+        val config = PRDownloaderConfig.newBuilder()
+            .setReadTimeout(30000)
+            .setConnectTimeout(30000)
+            .build()
+        PRDownloader.initialize(requireContext(), config)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,81 +109,99 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
         val saveItem = menu.findItem(R.id.menu_details_save)
         saveItem.setOnMenuItemClickListener {
-//            val config = PRDownloaderConfig.newBuilder()
-//                .setReadTimeout(30000)
-//                .setConnectTimeout(30000)
-//                .build()
-//            PRDownloader.initialize(requireContext(), config)
-//
-//            PRDownloader.download(args.photo.urls.regular)
+            grantStoragePermission()
 
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-//                i.addCategory(Intent.CATEGORY_DEFAULT)
-//                startActivityForResult(Intent.createChooser(i, "Choose directory"), 9999)
-//            }
+            val chooseFolderIntent = Intent(Intent.ACTION_GET_CONTENT);
+            chooseFolderIntent.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)
+            chooseFolderIntent.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true)
+            chooseFolderIntent.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR)
 
-
-            // This always works
-//            val i = Intent(context, FilePickerActivity::class.java)
-            // This works if you defined the intent filter
-            val i = Intent(Intent.ACTION_GET_CONTENT);
-
-            // Set these depending on your use case. These are the defaults.
-            // This works if you defined the intent filter
-            // Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-
-            // Set these depending on your use case. These are the defaults.
-            i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)
-            i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false)
-            i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR)
-
-            // Configure initial directory by specifying a String.
-            // You could specify a String like "/storage/emulated/0/", but that can
-            // dangerous. Always use Android's API calls to get paths to the SD-card or
-            // internal memory.
-
-            // Configure initial directory by specifying a String.
-            // You could specify a String like "/storage/emulated/0/", but that can
-            // dangerous. Always use Android's API calls to get paths to the SD-card or
-            // internal memory.
-            i.putExtra(
+            chooseFolderIntent.putExtra(
                 FilePickerActivity.EXTRA_START_PATH,
                 Environment.getExternalStorageDirectory().path
             )
 
-            startActivityForResult(i, 9999)
-
-
-//            MaterialFilePicker()
-//                // Pass a source of context. Can be:
-//                //    .withActivity(Activity activity)
-//                //    .withFragment(Fragment fragment)
-//                //    .withSupportFragment(androidx.fragment.app.Fragment fragment)
-//                .withActivity(activity)
-//                // With cross icon on the right side of toolbar for closing picker straight away
-//                .withCloseMenu(true)
-//                // Showing hidden files
-//                .withHiddenFiles(true)
-//                // Want to choose only jpg images
-////                .withFilter(Pattern.compile(".*\\.(jpg|jpeg)$"))
-//                // Don't apply filter to directories names
-//                .withFilterDirectories(false)
-//                .withTitle("Sample title")
-//                .withRequestCode(9999)
-//                .start()
+            startActivityForResult(chooseFolderIntent, 9999)
 
             true
         }
 
-
     }
+
+    private fun grantStoragePermission() {
+        PermissionX.init(requireActivity())
+            .permissions(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            .request { allGranted, grantedList, deniedList ->
+                if (allGranted) {
+                    Toast.makeText(
+                        requireContext(),
+                        "All permissions are granted",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "These permissions are denied: $deniedList",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            9999 ->
-                Toast.makeText(context, data.toString(), Toast.LENGTH_LONG).show()
+            9999 -> {
+                var download: Request? = null
+
+                val mBottomSheetDialog = BottomSheetMaterialDialog.Builder(requireActivity())
+                    .setTitle("Downloading...")
+                    .setCancelable(false)
+                    .setAnimation(R.raw.download2)
+                    .setNegativeButton(
+                        "Cancel", R.drawable.ic_close
+                    ) { dialogInterface, which ->
+                        dialogInterface.dismiss()
+                        fetch.cancel(download!!.id)
+                    }
+                    .build()
+                mBottomSheetDialog.show()
+
+
+                val fetchConfiguration: FetchConfiguration =
+                    FetchConfiguration.Builder(requireContext())
+                        .setDownloadConcurrentLimit(3)
+                        .build()
+
+                fetch = Fetch.Impl.getInstance(fetchConfiguration)
+
+
+                val url = args.photo.urls.full
+                val file = data?.data?.path
+
+                val request = Request(url, file!!)
+                request.priority = Priority.HIGH
+                request.networkType = NetworkType.ALL
+
+                fetch.enqueue(request, { updatedRequest ->
+
+                })
+                { error ->
+                    Toasty.error(
+                        requireContext(),
+                        "error: ${error.toString()}",
+                        Toasty.LENGTH_LONG
+                    ).show()
+                }
+
+            }
         }
     }
+
+
 }
+
