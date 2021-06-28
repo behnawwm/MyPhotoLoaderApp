@@ -56,6 +56,12 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$testExtJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 
+    //AndroidX Base
+    // Java language implementation
+    implementation "androidx.fragment:fragment:$fragment_version"
+    // Kotlin
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+
     // Navigation Component
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
@@ -86,9 +92,6 @@ dependencies {
     //file picker
     implementation 'com.nononsenseapps:filepicker:4.1.0'
 
-    //progress bar
-    implementation 'com.mikhaellopez:circularprogressbar:3.1.0'
-
     // Material Dialog Library
     implementation 'dev.shreyaspatil.MaterialDialog:MaterialDialog:2.2.2'
     // Material Design Library
@@ -99,11 +102,6 @@ dependencies {
 
     //Toasty
     implementation 'com.github.GrenderG:Toasty:1.5.0'
-
-    //Permission
-//    implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
-    implementation 'com.permissionx.guolindev:permissionx:1.4.0'
-
 
 
 }

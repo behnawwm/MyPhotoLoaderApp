@@ -3,14 +3,17 @@ package com.example.myphotoloaderapp.UI.details
 import android.Manifest
 import android.content.ContentResolver
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
@@ -19,13 +22,11 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.downloader.PRDownloader
-import com.downloader.PRDownloaderConfig
 import com.example.myphotoloaderapp.R
 import com.example.myphotoloaderapp.databinding.FragmentDetailsBinding
 import com.nononsenseapps.filepicker.FilePickerActivity
-import com.permissionx.guolindev.PermissionX
 import com.tonyodev.fetch2.*
+import com.tonyodev.fetch2core.DownloadBlock
 import dev.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog
 import es.dmoral.toasty.Toasty
 
@@ -90,16 +91,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             }
         }
 
-
         setHasOptionsMenu(true)
     }
 
-    private fun initializeDownloader() {
-        val config = PRDownloaderConfig.newBuilder()
-            .setReadTimeout(30000)
-            .setConnectTimeout(30000)
-            .build()
-        PRDownloader.initialize(requireContext(), config)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        grantStoragePermission()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -109,7 +106,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
         val saveItem = menu.findItem(R.id.menu_details_save)
         saveItem.setOnMenuItemClickListener {
-            grantStoragePermission()
 
             val chooseFolderIntent = Intent(Intent.ACTION_GET_CONTENT);
             chooseFolderIntent.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)
@@ -128,80 +124,167 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     }
 
-    private fun grantStoragePermission() {
-        PermissionX.init(requireActivity())
-            .permissions(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-            .request { allGranted, grantedList, deniedList ->
-                if (allGranted) {
-                    Toast.makeText(
-                        requireContext(),
-                        "All permissions are granted",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "These permissions are denied: $deniedList",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
+    private fun initializeDownloader() {
+        val fetchConfiguration: FetchConfiguration =
+            FetchConfiguration.Builder(requireContext())
+                .setDownloadConcurrentLimit(3)
+                .build()
+
+        fetch = Fetch.Impl.getInstance(fetchConfiguration)
     }
 
+    private fun grantStoragePermission() {
+        val requestPermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    // Permission is granted. Continue the action or workflow in your
+                    // app.
+                    Toasty.success(requireContext(), "granted", Toasty.LENGTH_SHORT)
+                        .show()
+                } else {
+                    // Explain to the user that the feature is unavailable because the
+                    // features requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                    Toasty.error(requireContext(), "declined. why azizam?", Toasty.LENGTH_SHORT)
+                        .show()
+                }
+            }
+
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                // You can use the API that requires the permission.
+            }
+            shouldShowRequestPermissionRationale("mamad")
+            -> {
+                // In an educational UI, explain to the user why your app requires this
+                // permission for a specific feature to behave as expected. In this UI,
+                // include a "cancel" or "no thanks" button that allows the user to
+                // continue using your app without granting the permission.
+                Toasty.warning(requireContext(), "grant permission mamad jan", Toasty.LENGTH_SHORT)
+                    .show()
+            }
+            else -> {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                requestPermissionLauncher.launch(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            }
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             9999 -> {
-                var download: Request? = null
+                if (data == null)
+                    return
 
-                val mBottomSheetDialog = BottomSheetMaterialDialog.Builder(requireActivity())
-                    .setTitle("Downloading...")
-                    .setCancelable(false)
-                    .setAnimation(R.raw.download2)
-                    .setNegativeButton(
-                        "Cancel", R.drawable.ic_close
-                    ) { dialogInterface, which ->
-                        dialogInterface.dismiss()
-                        fetch.cancel(download!!.id)
-                    }
-                    .build()
+                var download: Request? = null
+                val mBottomSheetDialog = makeDownloadDialog(download)
                 mBottomSheetDialog.show()
 
-
-                val fetchConfiguration: FetchConfiguration =
-                    FetchConfiguration.Builder(requireContext())
-                        .setDownloadConcurrentLimit(3)
-                        .build()
-
-                fetch = Fetch.Impl.getInstance(fetchConfiguration)
-
-
-                val url = args.photo.urls.full
-                val file = data?.data?.path
-
-                val request = Request(url, file!!)
-                request.priority = Priority.HIGH
-                request.networkType = NetworkType.ALL
-
-                fetch.enqueue(request, { updatedRequest ->
-
-                })
-                { error ->
-                    Toasty.error(
-                        requireContext(),
-                        "error: ${error.toString()}",
-                        Toasty.LENGTH_LONG
-                    ).show()
-                }
-
+                initializeDownloader()
+                download = makeDownloadRequest(data)
+                enqueueDownloadRequest(fetch, download, mBottomSheetDialog)
             }
         }
     }
 
+    private fun makeDownloadRequest(pathData: Intent): Request {
+        val url = args.photo.urls.full
+        val path = pathData.data?.path?.substringAfter("/root") + "/${args.photo.id}.jpg"
 
+        var download = Request(url, path)
+        download.priority = Priority.HIGH
+        download.networkType = NetworkType.ALL
+
+        return download
+    }
+
+    private fun makeDownloadDialog(download: Request?): BottomSheetMaterialDialog {
+        return BottomSheetMaterialDialog.Builder(requireActivity())
+            .setTitle("Downloading...")
+            .setCancelable(false)
+            .setAnimation(R.raw.download2)
+            .setNegativeButton(
+                "Cancel", R.drawable.ic_close
+            ) { dialogInterface, which ->
+                dialogInterface.dismiss()
+                if (download != null)
+                    fetch.cancel(download.id)
+            }
+            .build()
+    }
+
+    private fun enqueueDownloadRequest(
+        fetch: Fetch,
+        request: Request,
+        dialog: BottomSheetMaterialDialog
+    ) {
+        var fetchListener: FetchListener = object : FetchListener {
+            override fun onQueued(download: Download, waitingOnNetwork: Boolean) {}
+            override fun onCompleted(download: Download) {
+                Toasty.success(requireContext(), "Download Complete!", Toasty.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+
+            override fun onProgress(
+                download: Download,
+                etaInMilliSeconds: Long,
+                downloadedBytesPerSecond: Long
+            ) {
+                val progress = download.progress
+                Log.d("mamad", "Progress: $progress")
+            }
+
+            override fun onPaused(download: Download) {}
+            override fun onResumed(download: Download) {}
+            override fun onStarted(
+                download: Download,
+                downloadBlocks: List<DownloadBlock>,
+                totalBlocks: Int
+            ) {
+            }
+
+            override fun onWaitingNetwork(download: Download) {}
+            override fun onAdded(download: Download) {}
+            override fun onCancelled(download: Download) {}
+            override fun onRemoved(download: Download) {}
+            override fun onDeleted(download: Download) {}
+            override fun onDownloadBlockUpdated(
+                download: Download,
+                downloadBlock: DownloadBlock,
+                totalBlocks: Int
+            ) {
+            }
+
+            override fun onError(download: Download, error: Error, throwable: Throwable?) {
+                Toasty.error(
+                    requireContext(),
+                    "Error Downloading Image: ${error.name}",
+                    Toasty.LENGTH_LONG
+                ).show()
+                dialog.dismiss()
+            }
+        }
+
+        fetch.enqueue(request, {})
+        { error ->
+            Toasty.error(
+                requireContext(),
+                "error: ${error.toString()}",
+                Toasty.LENGTH_LONG
+            ).show()
+        }
+        fetch.addListener(fetchListener)
+    }
 }
 
