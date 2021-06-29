@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -23,24 +25,29 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.myphotoloaderapp.R
+import com.example.myphotoloaderapp.data.MyPhoto
+import com.example.myphotoloaderapp.databinding.BottomSheetLoadingBinding
 import com.example.myphotoloaderapp.databinding.FragmentDetailsBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nononsenseapps.filepicker.FilePickerActivity
+import com.skydoves.progressview.ProgressView
+import com.stfalcon.imageviewer.StfalconImageViewer
 import com.tonyodev.fetch2.*
 import com.tonyodev.fetch2core.DownloadBlock
-import dev.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog
 import es.dmoral.toasty.Toasty
 
 
 class DetailsFragment : Fragment(R.layout.fragment_details) {
 
+    lateinit var binding: FragmentDetailsBinding
     private val args by navArgs<DetailsFragmentArgs>()
     lateinit var contentResolver: ContentResolver
     lateinit var fetch: Fetch
-
+    val viewmodel by viewModels<DetailsViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentDetailsBinding.bind(view)
+        binding = FragmentDetailsBinding.bind(view)
 
         contentResolver = activity?.contentResolver!!
         initializeDownloader()
@@ -48,8 +55,39 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         binding.apply {
             val photo = args.photo
 
+            fillImageView(photo)
+
+            imageView.setOnClickListener {
+                val images = listOf(photo.urls.full)
+
+                StfalconImageViewer.Builder(context, images) { view, image ->
+                    Glide.with(this@DetailsFragment)
+                        .load(image)
+                        .error(R.drawable.ic_image_error)
+                        .into(view)
+                }.show()
+            }
+
+            textViewDescription.text = photo.desc
+            val uri = Uri.parse(photo.user.attributionUrl)
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+
+            textViewCreator.apply {
+                text = "Photo by ${photo.user.name} on Unsplash"
+                setOnClickListener {
+                    context.startActivity(intent)
+                }
+                paint.isUnderlineText = true
+            }
+        }
+
+        setHasOptionsMenu(true)
+    }
+
+    private fun fillImageView(photo: MyPhoto) {
+        binding.apply {
             Glide.with(this@DetailsFragment)
-                .load(photo.urls.full)
+                .load(photo.urls.regular)
                 .error(R.drawable.ic_image_error)
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(
@@ -58,7 +96,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                         target: Target<Drawable>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        progressBar.isVisible = false
+                        binding.progressBar.isVisible = false
                         return false
                     }
 
@@ -76,23 +114,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                     }
                 })
                 .into(imageView)
-
-            textViewDescription.text = photo.desc
-
-            val uri = Uri.parse(photo.user.attributionUrl)
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-
-            textViewCreator.apply {
-                text = "Photo by ${photo.user.name} on Unsplash"
-                setOnClickListener {
-                    context.startActivity(intent)
-                }
-                paint.isUnderlineText = true
-            }
         }
-
-        setHasOptionsMenu(true)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -209,27 +233,70 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         return download
     }
 
-    private fun makeDownloadDialog(download: Request?): BottomSheetMaterialDialog {
-        return BottomSheetMaterialDialog.Builder(requireActivity())
-            .setTitle("Downloading...")
-            .setCancelable(false)
-            .setAnimation(R.raw.download2)
-            .setNegativeButton(
-                "Cancel", R.drawable.ic_close
-            ) { dialogInterface, which ->
-                dialogInterface.dismiss()
+
+    private fun makeDownloadDialog(download: Request?): BottomSheetDialog {
+        val bottomSheetLoadingBinding =
+            BottomSheetLoadingBinding.inflate(LayoutInflater.from(context))
+
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.apply {
+            setContentView(R.layout.bottom_sheet_loading)
+            setCancelable(false)
+        }
+        bottomSheetLoadingBinding.apply {
+            btnCancelBottomSheet.setOnClickListener {
+                dialog.dismiss()
                 if (download != null)
                     fetch.cancel(download.id)
             }
-            .build()
+        }
+        return dialog
+
+//        return LoadingBottomSheet().show(requireContext()) {
+//            style(SheetStyle.BOTTOM_SHEET)
+//            title("Custom Example")
+//        }
+
+//        return LovelyProgressDialog(requireContext())
+//            .setIcon(R.drawable.ic_close)
+//            .setTitle("Downloading...")
+//            .setTopColorRes(R.color.colorPrimary)
+//            .show();
+
+//        return BottomSheetMaterialDialog.Builder(requireActivity())
+//            .setTitle("Downloading...")
+//            .setCancelable(false)
+//            .setAnimation(R.raw.download2)
+//            .setNegativeButton(
+//                "Cancel", R.drawable.ic_close
+//            ) { dialogInterface, which ->
+//                dialogInterface.dismiss()
+//                if (download != null)
+//                    fetch.cancel(download.id)
+//            }
+//            .build()
     }
 
     private fun enqueueDownloadRequest(
         fetch: Fetch,
         request: Request,
-        dialog: BottomSheetMaterialDialog
+        dialog: BottomSheetDialog
     ) {
-        var fetchListener: FetchListener = object : FetchListener {
+        var fetchListener = provideFetchListener(dialog)
+
+        fetch.enqueue(request, {})
+        { error ->
+            Toasty.error(
+                requireContext(),
+                "error: ${error}",
+                Toasty.LENGTH_LONG
+            ).show()
+        }
+        fetch.addListener(fetchListener)
+    }
+
+    private fun provideFetchListener(dialog: BottomSheetDialog): FetchListener {
+        return object : FetchListener {
             override fun onQueued(download: Download, waitingOnNetwork: Boolean) {}
             override fun onCompleted(download: Download) {
                 Toasty.success(requireContext(), "Download Complete!", Toasty.LENGTH_SHORT).show()
@@ -243,6 +310,8 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             ) {
                 val progress = download.progress
                 Log.d("mamad", "Progress: $progress")
+                dialog.findViewById<ProgressView>(R.id.pb_loading_bottom_sheet)?.progress =
+                    progress.toFloat()
             }
 
             override fun onPaused(download: Download) {}
@@ -275,16 +344,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 dialog.dismiss()
             }
         }
-
-        fetch.enqueue(request, {})
-        { error ->
-            Toasty.error(
-                requireContext(),
-                "error: ${error.toString()}",
-                Toasty.LENGTH_LONG
-            ).show()
-        }
-        fetch.addListener(fetchListener)
     }
 }
 

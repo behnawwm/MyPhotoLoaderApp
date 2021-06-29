@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_white_round_top"
+    android:padding="16dp">
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginRight="4dp"
+        android:layout_toStartOf="@id/tv_loading_bottom_sheet"
+        android:src="@drawable/ic_download" />
+
+    <TextView
+        android:id="@+id/tv_loading_bottom_sheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Downloading..."
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
+    <com.skydoves.progressview.ProgressView
+        android:id="@+id/pb_loading_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/tv_loading_bottom_sheet"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        app:progressView_autoAnimate="true"
+        app:progressView_colorBackground="@color/white"
+        app:progressView_colorProgress="@android:color/holo_blue_bright"
+        app:progressView_labelColorInner="@color/white"
+        app:progressView_labelColorOuter="@color/black"
+        app:progressView_labelSpace="10dp"
+        app:progressView_labelTypeface="bold"
+        app:progressView_max="100"
+        app:progressView_min="15"
+        app:progressView_padding="1dp"
+        app:progressView_progress="1"
+        app:progressView_progressFromPrevious="true"
+        app:progressView_radius="12dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_cancel_bottom_sheet"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pb_loading_bottom_sheet"
+        android:text="cancel" />
+</RelativeLayout>
