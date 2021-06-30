@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_white_round_top"
-    android:padding="16dp">
+    android:background="@drawable/bg_white_round_top">
 
     <ImageView
         android:layout_width="32dp"
@@ -39,9 +38,8 @@
         app:progressView_labelSpace="10dp"
         app:progressView_labelTypeface="bold"
         app:progressView_max="100"
-        app:progressView_min="15"
+        app:progressView_min="20"
         app:progressView_padding="1dp"
-        app:progressView_progress="1"
         app:progressView_progressFromPrevious="true"
         app:progressView_radius="12dp" />
 

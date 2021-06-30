@@ -2,7 +2,10 @@ package com.example.myphotoloaderapp.UI.gallery
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.myphotoloaderapp.data.PhotoRepository
 
@@ -24,6 +27,6 @@ class GalleryViewModel @ViewModelInject constructor(
 
     companion object {
         private const val CURRENT_QUERY = "unique_query!"
-        private const val DEFAULT_QUERY = "beautiful"
+        private const val DEFAULT_QUERY = "Nature"
     }
 }
