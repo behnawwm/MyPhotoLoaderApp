@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/galleryFragment"
-        android:name="com.example.myphotoloaderapp.UI.gallery.GalleryFragment"
+        android:name="com.example.myphotoloaderapp.ui.gallery.GalleryFragment"
         android:label="Photo Gallery"
         tools:layout="@layout/fragment_gallery">
         <action
@@ -16,11 +16,11 @@
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.example.myphotoloaderapp.UI.details.DetailsFragment"
+        android:name="com.example.myphotoloaderapp.ui.details.DetailsFragment"
         android:label="Details"
         tools:layout="@layout/fragment_details">
         <argument
             android:name="photo"
-            app:argType="com.example.myphotoloaderapp.data.MyPhoto" />
+            app:argType="com.example.myphotoloaderapp.data.model.MyPhoto" />
     </fragment>
 </navigation>

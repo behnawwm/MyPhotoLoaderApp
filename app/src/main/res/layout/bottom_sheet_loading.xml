@@ -49,5 +49,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/pb_loading_bottom_sheet"
-        android:text="cancel" />
+        android:text="cancel"
+        android:textColor="@color/colorPrimary" />
 </RelativeLayout>

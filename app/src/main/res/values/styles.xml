@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="android:actionBarStyle">@style/MyToolbar</item>
+        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Primary</item>
     </style>
 
     <!-- File Picker -->
@@ -25,12 +25,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!--  Toolbar  -->
-    <style name="MyToolbar" parent="Widget.AppCompat.Toolbar">
-        <item name="titleTextColor">@color/white</item>
-        <item name="tint">@color/white</item>
-
-    </style>
 
     <!-- Bottom Sheet   -->
     <style name="SheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
@@ -43,6 +37,5 @@
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
     </style>
-
 
 </resources>
