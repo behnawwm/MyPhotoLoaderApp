@@ -1,16 +1,41 @@
-# MyPhotoLoaderApp
+<h1 align="center">MyPhotoLoaderApp</h1>
 
-Simple photo loading app powered by [Unsplash.com](https://unsplash.com) which implements MVVM architecture using Hilt, Navigation Component, Retrofit, Paging 3 library, Glide, View Binding & Coroutines.
+Simple photo loading app powered by [Unsplash.com](https://unsplash.com) 
 
-[Get .APK file from here!](https://github.com/behnawwm/MyPhotoLoaderApp/raw/master/Apk/MyPhotoLoader.apk)
+## Features
+- Saving photo to external storage
+- viewing saved & favorite photos (todo)
 
-#### If no results were shown:
+## Tech stack & Open-source libraries
+This project is based on MVVM architecture, using following tech-stacks:
+- Jetpack
+  - Navigation Component
+  - Hilt
+  - Paging 3
+  - Lifecycle
+  - View Binding
+- Retrofit
+- Glide
+- Coroutines
+
+## How to use?
+Build & install or [Get .APK](https://github.com/behnawwm/MyPhotoLoaderApp/raw/master/Apk/MyPhotoLoader.apk)
+If no results were shown:
 - Replace ``UNSPLASH_ACCESS_KEY`` in ``build.gradle`` with your own access_key from [Unsplash Developers](https://unsplash.com/developers).
 - Use proxy!
 
 
 ## Screenshots:
-<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130570.jpg" align="left" width="150" >
-<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130568.jpg" align="left" width="150" >
-<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130569.jpg" align="left" width="150" >
-<img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130566.jpg" align="left" width="150" >
+<p float="left">
+  <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130570.jpg" width="20%" >
+  <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130568.jpg" width="20%" >
+  <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130569.jpg" width="20%" >
+  <img src="https://github.com/behnawwm/MyPhotoLoaderApp/blob/master/screenshots/photo5803347900867130566.jpg" width="20%" >
+</p>
+
+
+## Architecture
+This app is based on MVVM architecture and a repository pattern.
+<p align="center">
+<img src="https://developer.android.com/topic/libraries/architecture/images/paging3-library-architecture.svg"/>
+</p>
