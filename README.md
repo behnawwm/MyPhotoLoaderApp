@@ -20,10 +20,10 @@ This project is based on MVVM architecture, using following tech-stacks:
 
 ## How to use?
 Build & install or [Get .APK](https://github.com/behnawwm/MyPhotoLoaderApp/raw/master/Apk/MyPhotoLoader.apk)
-If no results were shown:
-- Replace ``UNSPLASH_ACCESS_KEY`` in ``build.gradle`` with your own access_key from [Unsplash Developers](https://unsplash.com/developers).
-- Use proxy!
 
+If no results were shown:
+- Use proxy!
+- Replace ``UNSPLASH_ACCESS_KEY`` in ``build.gradle`` with your own access_key from [Unsplash Developers](https://unsplash.com/developers).
 
 ## Screenshots:
 <p float="left">
