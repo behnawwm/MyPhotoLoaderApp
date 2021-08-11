@@ -3,7 +3,12 @@
 Simple photo loading app powered by [Unsplash.com](https://unsplash.com) 
 
 ## Features
-- Saving photo to external storage
+- Vieweing the high quality image + description of the owner
+- Searching among the whole Unsplash photos
+- Saving photo to selected path of external storage
+- Zooming Image
+- Handling high loads of data
+- Handling errors and network issues
 - viewing saved & favorite photos (todo)
 
 ## Tech stack & Open-source libraries
@@ -17,6 +22,9 @@ This project is based on MVVM architecture, using following tech-stacks:
 - Retrofit
 - Glide
 - Coroutines
+- [Zoombale ImageView](https://github.com/stfalcon-studio/StfalconImageViewer)
+- [File Picker](https://github.com/spacecowboy/NoNonsense-FilePicker)
+- [Downloader](https://github.com/tonyofrancis/Fetch)
 
 ## How to use?
 Build & install or [Get .APK](https://github.com/behnawwm/MyPhotoLoaderApp/raw/master/Apk/MyPhotoLoader.apk)
